@@ -1,28 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from './Components/Sidebar';
 import Dashboard from './Components/Dashboard';
 import './App.css';
 
 function App() {
-  const [tasks, setTasks] = useState([]);
-  const [filter, setFilter] = useState('upcoming');
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredTasks, setFilteredTasks] = useState([]);
+  const [tasks, setTasks] = useState([]); // All tasks
+  const [filter, setFilter] = useState('upcoming'); // Filter for task categories
+  const [searchQuery, setSearchQuery] = useState(""); // Search query
 
-  // Filter tasks based on search query
-  const handleSearch = () => {
-    const result = tasks.filter(task =>
-      task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      task.description.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setFilteredTasks(result); // Set the filtered tasks state
-  };
+  // Filter tasks based on search query and selected filter
+  const filteredTasks = tasks
+    .filter(task => {
+      return task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        task.description.toLowerCase().includes(searchQuery.toLowerCase());
+    })
+    .filter(task => {
+      // Filter based on task categories (e.g., upcoming, completed, overdue)
+      if (filter === "upcoming") return !task.completed && !isOverdue(task);
+      if (filter === "completed") return task.completed;
+      if (filter === "overdue") return !task.completed && isOverdue(task);
+      return true; // Show all tasks by default
+    });
+
+  // Function to check if task is overdue
+  function isOverdue(task) {
+    const today = new Date();
+    return new Date(task.dueDate) < today && !task.completed;
+  }
 
   return (
     <div className="app">
       {/* Header Section */}
       <header className="header">
-        <h1>Task Manager</h1>
+        <div className='header-heading'>
+        <h3>Task Manager</h3>
+        </div>
 
         {/* Search Bar */}
         <div className="search-container">
@@ -33,17 +45,17 @@ function App() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <button className="search-btn" onClick={handleSearch}>
-            Search
-          </button>
         </div>
       </header>
 
-      <div className="sidebar-container">
-        <Sidebar setFilter={setFilter} />
-      </div>
-      <div className="dashboard-container">
-        <Dashboard tasks={filteredTasks.length > 0 ? filteredTasks : tasks} setTasks={setTasks} filter={filter} />
+      <div >
+        {/* Sidebar */}
+        
+
+        {/* Dashboard */}
+        <div className="dashboard-container">
+          <Dashboard tasks={filteredTasks.length > 0 ? filteredTasks : tasks} setTasks={setTasks} filter={filter} searchQuery={searchQuery}/>
+        </div>
       </div>
     </div>
   );

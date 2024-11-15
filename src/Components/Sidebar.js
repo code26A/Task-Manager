@@ -4,7 +4,6 @@ import { FaTasks, FaCheckCircle, FaHourglassStart, FaClipboardList, FaExclamatio
 function Sidebar({ setFilter }) {
   return (
     <div className="sidebar">
-      {/* Removed the Upcoming Tasks Button */}
       <button onClick={() => setFilter("ongoing")}>
         <FaClipboardList className="icon" /> Ongoing Tasks
       </button>
