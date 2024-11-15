@@ -19,8 +19,10 @@ https://github.com/code26A/Task-Manager.git
 
  npm istall
 
-### Step 3: Run the task manager using:
 
 npm start
+
+### Overview
+
 
 
